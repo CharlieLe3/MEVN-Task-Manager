@@ -1,27 +1,90 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Login from '../views/authentication/Login.vue'
+import Register from '../views/authentication/Register.vue'
+import TasksAll from '../views/tasks/TasksAll.vue'
+import TasksCreate from '../views/tasks/TasksCreate.vue'
+import TasksEdit from '../views/tasks/TasksEdit.vue'
+import * as auth from '../services/AuthService';
 
 Vue.use(VueRouter)
 
-  const routes = [
+const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/tasks',
+    name: 'tasks-all',
+    component: TasksAll,
+    beforeEnter: (to, from, next) => {
+      if (auth.isLoggedIn()) {
+        next();
+      } else {
+        next('/login');
+      }
+    }
+  },
+  {
+    path: '/tasks/new',
+    name: 'tasks-create',
+    component: TasksCreate,
+    beforeEnter: (to, from, next) => {
+      if (auth.isLoggedIn()) {
+        next();
+      } else {
+        next('/login');
+      }
+    }
+  },
+  {
+    path: '/tasks/edit',
+    name: 'tasks-edit',
+    component: TasksEdit,
+    beforeEnter: (to, from, next) => {
+      if (auth.isLoggedIn()) {
+        next();
+      } else {
+        next('/login');
+      }
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+    beforeEnter: (to, from, next) => {
+      if (!auth.isLoggedIn()) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      if (!auth.isLoggedIn()) {
+        next();
+      } else {
+        next('/');
+      }
+    }
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  linkActiveClass: 'active',
+  mode: 'history'
 })
-
 export default router
