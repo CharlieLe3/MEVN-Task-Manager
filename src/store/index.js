@@ -7,7 +7,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     isLoggedIn: false,
-    apiUrl: 'http://localhost:3000/api',
+    apiUrl: 'https://mevn-task-manager-server.herokuapp.com/api',
     username: null,
     userId: null
   },
